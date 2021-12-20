@@ -10,7 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Macar Algoritması</title>
     <link rel="stylesheet" href="./css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
         integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
@@ -19,20 +19,31 @@
 
 <body>
     <div style="margin-top: 25px;" class="container">
+        <h1>Macar Algoritması Hesaplayıcı</h1>
         <div>
             <div>
-                <input id="size-input" type="number" class="form-control" maxlength="1"
+                <input id="size-input" type="number" class="form-control" maxlength="1" style="width: 260px;"
                     placeholder="Matris Boyutunu giriniz" />
-                <button id="btn-create" class="form-control btn btn-lg btn-success">Oluştur</button>
+                <button style="width: 200px; margin-top: 10px;" id="btn-create"
+                    class="form-control btn btn-lg btn-success">Oluştur</button>
             </div>
         </div>
         <div style="margin-top: 20px;">
             <table id="matrix-table">
             </table>
-            <button hidden id="btn-calculate" class="btn btn-lg btn-warning">Hesapla</button>
+            <table>
+                <button hidden id="btn-calculate" class="btn btn-lg btn-warning"
+                    style="margin-top: 15px; width: 200px;">Hesapla</button>
 
-            <h3 id="result-header" hidden>Sonuç</h3>
-            <h1 hidden id="result"></h1>
+                <tr>
+                    <td>
+                        <h1 id="result-header" hidden>Sonuç: </h1>
+                    </td>
+                    <td>
+                        <h1 style="margin-left: 15px;" hidden id="result"></h1>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
     <script src="./js/index.js"></script>

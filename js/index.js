@@ -35,12 +35,14 @@ function createMatrix() {
     $('#btn-calculate').removeAttr('hidden');
 }
 
+//Kullanıcıdan girilen değere göre matrisi oluşturan buton.
 function btnCreateOnClick() {
     $('#btn-create').on('click', function () {
         createMatrix();
     })
 }
 
+//Algoritmanın çalışması sonrasında oluşan sonucu kullanıcıya gösteren buton.
 function btnCalculateOnClick() {
     $('#btn-calculate').on('click', function () {
         resetGlobalValues();
@@ -85,20 +87,20 @@ function Hungarian() {
         occupiedCols[i] = 0;
 
     }
-    //Algoritma
-    subtractRowMinimal();                // Adım 1
-    subtractColMinimal();                // Adım 2
-    coverZeros();                        // Adım 3
+    //Algoritma adımları
+    subtractRowMinimal();                // 1. Adım
+    subtractColMinimal();                // 2. Adım
+    coverZeros();                        // 3. Adım
     while (numLines < values.length) {
-        createAdditionalZeros();        // Adım 4 (Duruma bağlı)
-        coverZeros();                    // Adım 3 (Duruma bağlı)
+        createAdditionalZeros();        // Duruma bağlı adım
+        coverZeros();
     }
-    optimization();                        // Optimizasyon
+    optimization();
 }
 
+//Matriste bulunan her satır için o satırdaki en küçük elemanları diziye alan fonksiyon.
 function subtractRowMinimal() {
     let rowMinValue = [];
-    //Her satır için min değer rowMinValue[] array'i içerisinde saklanır.
     for (var row = 0; row < values.length; row++) {
         rowMinValue[row] = values[row][0];
         for (var col = 1; col < values.length; col++) {
@@ -110,7 +112,7 @@ function subtractRowMinimal() {
         }
     }
 
-    //rowMinValue[] array'i kullanılarak her satırdan min değer çıkartılır.
+    //En küçük değerlerin diğer elemanlardan çıkarılması işlemi.
     for (var row = 0; row < values.length; row++) {
         for (var col = 0; col < values.length; col++) {
             values[row][col] -= rowMinValue[row];
@@ -118,9 +120,9 @@ function subtractRowMinimal() {
     }
 }
 
+//Matriste bulunan her sütun için o sütundaki en küçük elemanları diziye alan fonksiyon.
 function subtractColMinimal() {
     let colMinValue = []
-    //Her sütun için min değer colMinValue[] array'i içerisinde saklanır.
     for (var col = 0; col < values.length; col++) {
         colMinValue[col] = values[0][col];
         for (var row = 1; row < values.length; row++) {
@@ -129,7 +131,7 @@ function subtractColMinimal() {
         }
     }
 
-    //colMinValue[] array'i kullanılarak her sütundan min değer çıkartılır. 
+    //En küçük değerlerin diğer elemanlardan çıkarılması işlemi.
     for (var col = 0; col < values.length; col++) {
         for (var row = 0; row < values.length; row++) {
             values[row][col] -= colMinValue[col];
@@ -137,7 +139,7 @@ function subtractColMinimal() {
     }
 }
 
-
+//Matris elemanları gezilir ve 0 olan elemanlar için fonksiyon çağrılır.
 function coverZeros() {
     numLines = 0;
     for (var i = 0; i < size; i++) {
@@ -157,6 +159,9 @@ function coverZeros() {
     }
 }
 
+
+//Matriste oluşan sıfırlar kapanacak şekilde çizgiler çizilir.
+//Sütun ve satırda ne kadar 0 bulunduğu kontrol edilir.
 function maxVH(row, col) {
     var result = 0;
     for (var i = 0; i < values.length; i++) {
@@ -168,6 +173,7 @@ function maxVH(row, col) {
     return result;
 }
 
+//Komşuların üzerinin çizilmesi.
 function colorNeighbors(row, col, maxVH) {
 
     //Kontroller yapılıyor
@@ -192,14 +198,13 @@ function colorNeighbors(row, col, maxVH) {
 
     // çizilen çizgi sayısını arttır.
     numLines++;
-    //		printMatrix(lines); 
 }
 
-
+//Duruma bağlı olan her zaman çalışmayan fonksiyon.
 function createAdditionalZeros() {
-    var minUncoveredValue = 0; //İlk değeri 0 olarak atadık
+    var minUncoveredValue = 0;
 
-    // Üzeri çizilmemiş hücreler için min değer bulunur
+    //Matriste kalan elemanların en küçük değerinin bulunması.
     for (var row = 0; row < values.length; row++) {
         for (var col = 0; col < values.length; col++) {
             if (lines[row][col] == 0 && (values[row][col] < minUncoveredValue || minUncoveredValue == 0))
@@ -207,34 +212,37 @@ function createAdditionalZeros() {
         }
     }
 
-    // Üzeri çizili olmayan elemanlardan min değer çıkartılır, kesişim noktalarına ise min değer eklenir.
+    //Bulunan küçük değerin diğer matris elemanlarına eklenmesi veya elemanlarından çıkarılması.
     for (var row = 0; row < values.length; row++) {
         for (var col = 0; col < values.length; col++) {
-            if (lines[row][col] == 0) // Üzeri çizilmemiş nokta, çıkar
+            //Kalan elemansa çıkarılır.
+            if (lines[row][col] == 0)
                 values[row][col] -= minUncoveredValue;
-
-            else if (lines[row][col] == 2) // Kesişim noktası, ekle
+            //Kesişim noktası ise eklenir.
+            else if (lines[row][col] == 2)
                 values[row][col] += minUncoveredValue;
         }
     }
 }
 
+//Optimizasyon işleminin yapıldığı fonksiyon.
 function findOptimization(row) {
-    if (parseInt(row) == rows.length) // Tüm satırlara bir hücre atanmışsa
+    //Her satıra eleman atandığının kontrol edilmesi.
+    if (parseInt(row) == rows.length)
         return true;
-
-    for (var col = 0; col < values.length; col++) { // Tüm sütunlar gezilir
-        // Geçerli hücre sıfır değerine sahipse ve bulunulan sütun önceki satır(lar) tarafından ayrılmış/kullanılmış ise
+    //Tüm sütunlar gezilir.
+    for (var col = 0; col < values.length; col++) {
+        //Eleman 0 ise ve nulunulan sütun satır tarafından kullanılmış ise sütunun atanması ve kullanılmış olarak işaretlenmesi.
         if (parseInt(values[row][col]) == 0 && parseInt(occupiedCols[col]) == 0) {
-            rows[row] = col; // Geçerli sütunu ata
-            occupiedCols[col] = 1; // Sütunu ayrılmış/kullanılmış olarak işaretle
-            if (findOptimization(row + 1)) // Sonraki satırlara farklı sütunlardan hüce ataması yapıldıysa, true
+            rows[row] = col;
+            occupiedCols[col] = 1;
+            //Diğer satırlara farklı sütunlardan eleman atanmış ise işlemin tamamlanması eğer atanmamış ise başka sütun elemanının denemesi.
+            if (findOptimization(row + 1))
                 return true;
-            // Sonraki satırlara herhangi bir atama yapılamadıysa geri dön ve önceki satırlar için başka bir sütundan başka bir hücre denensin
             occupiedCols[col] = 0;
         }
     }
-    // Geçerli satır için hiçbir hücre atanmamışsa, başka bir sütundan başka bir hücreye atamayı denemek için bir satır geri gitmek üzere false değeri döner
+    //Eğer hiç eleman atanamamış ise başka sütundan eleman denemek için satırda geriye gidilir.
     return false;
 }
 
@@ -242,12 +250,12 @@ function optimization() {
     return findOptimization(0);
 }
 
-
+//Satırlardan seçilmiş eleman dizilerini döndüren fonksiyon.
 function getResult() {
     return rows;
 }
 
-
+//Satırlardaki elemanları toplayarak problemin sonucunu döndüren fonksiyon.
 function getTotal() {
     var total = 0;
     for (var row = 0; row < values.length; row++)
