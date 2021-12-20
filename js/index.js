@@ -28,7 +28,7 @@ function createMatrix() {
     for (var i = 0; i < size; i++) {
         $('#matrix-table').append('<tr id="row_' + i + '"></tr>');
         for (var j = 0; j < size; j++) {
-            $('#row_' + i).append('<td ><input id="' + i + '_' + j + '"class="input-cell" type="number" /> </td>');
+            $('#row_' + i).append('<td><input id="' + i + '_' + j + '"class="input-cell" type="number" /> </td>');
         }
     }
 
@@ -59,6 +59,19 @@ function btnCalculateOnClick() {
         $('#result-header').removeAttr('hidden');
         $('#result').removeAttr('hidden');
         $('#result').html(getTotal());
+        paintSelectedCells();
+    })
+}
+
+function paintSelectedCells() {
+    let rowCounter = 0;
+    $('#matrix-table tr').each(function () {
+        for (let item = 0; item < size; item++) {
+            if (rows[rowCounter] == item) {
+                $('#' + rowCounter + '_' + item).css("background-color", "yellow");
+            }
+        }
+        rowCounter++;
     })
 }
 
@@ -118,6 +131,16 @@ function subtractRowMinimal() {
             values[row][col] -= rowMinValue[row];
         }
     }
+
+    $('#row-header').removeAttr('hidden');
+    for (var i = 0; i < size; i++) {
+        $('#row-matrix-table').append('<tr id="new_row_' + i + '"></tr>');
+        for (var j = 0; j < size; j++) {
+            $('#new_row_' + i).append('<td><input class="input-cell" value="' + values[i][j] + '"/></td>');
+        }
+    }
+
+
 }
 
 //Matriste bulunan her sütun için o sütundaki en küçük elemanları diziye alan fonksiyon.
@@ -135,6 +158,14 @@ function subtractColMinimal() {
     for (var col = 0; col < values.length; col++) {
         for (var row = 0; row < values.length; row++) {
             values[row][col] -= colMinValue[col];
+        }
+    }
+
+    $('#col-header').removeAttr('hidden');
+    for (var i = 0; i < size; i++) {
+        $('#col-matrix-table').append('<tr id="new_col_' + i + '"></tr>');
+        for (var j = 0; j < size; j++) {
+            $('#new_col_' + i).append('<td><input class="input-cell" value="' + values[i][j] + '"/></td>');
         }
     }
 }
@@ -261,14 +292,4 @@ function getTotal() {
     for (var row = 0; row < values.length; row++)
         total += parseInt(originalValues[row][parseInt(rows[row])]);
     return total;
-}
-
-function printMatrix(matrix) {
-    for (var row = 0; row < matrix.length; row++) {
-        for (var col = 0; col < matrix.length; col++) {
-            console.log(matrix[row][col] + "\t");
-        }
-        console.log('\n')
-    }
-    console.log('\n')
 }
